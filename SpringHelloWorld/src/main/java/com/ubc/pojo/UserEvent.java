@@ -25,18 +25,18 @@ public class UserEvent {
 	@Expose
 	@SerializedName("user_id")
 	private Long userid;
-	@Column(name = "EVENT_NAME")
-	@Expose
-	@SerializedName("event_name")
-	private String eventName;
+//	@Column(name = "EVENT_NAME")
+//	@Expose
+//	@SerializedName("event_name")
+//	private String eventName;
 	@Expose
 	@SerializedName("like_status")
 	@Column(name = "LIKE_STATUS")
 	private String likeStatus;
-	@Expose
-	@SerializedName("like_id")
-	@Column(name = "LIKESNUM")
-	private String like;
+//	@Expose
+//	@SerializedName("like_id")
+//	@Column(name = "LIKESNUM")
+//	private String like;
 	@Column(name="EVENT_ID")
 	@Expose
     @SerializedName("event_id")
@@ -58,13 +58,13 @@ public class UserEvent {
 		this.likeStatus = likeStatus;
 	}
 
-	public String getLike() {
-		return like;
-	}
-
-	public void setLike(String like) {
-		this.like = like;
-	}
+//	public String getLike() {
+//		return like;
+//	}
+//
+//	public void setLike(String like) {
+//		this.like = like;
+//	}
 
 	public Long getUserEventId() {
 		return userEventId;
@@ -82,12 +82,12 @@ public class UserEvent {
 		this.userid = userid;
 	}
 
-	public String getEventName() {
-		return eventName;
-	}
-
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
-	}
+//	public String getEventName() {
+//		return eventName;
+//	}
+//
+//	public void setEventName(String eventName) {
+//		this.eventName = eventName;
+//	}
 
 }

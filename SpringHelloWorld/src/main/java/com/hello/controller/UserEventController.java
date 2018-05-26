@@ -35,15 +35,15 @@ public class UserEventController {
 		    eManager.getTransaction().begin();
 		    UserEvent searchuserEvent = eManager.find(UserEvent.class, requestuserEvent.getUserEventId());
 			if(searchuserEvent!=null) {
-				if(requestuserEvent.getEventName()!=null && requestuserEvent.getEventName().length()>0) {
-					searchuserEvent.setEventName(requestuserEvent.getEventName());
-				}
-				if(requestuserEvent.getLike()!=null && requestuserEvent.getLike().length()>0) {
-					searchuserEvent.setLike(requestuserEvent.getLike());
-				}
-				if(requestuserEvent.getEventName()!=null && requestuserEvent.getEventName().length()>0) {
-					searchuserEvent.setEventName(requestuserEvent.getEventName());
-				}
+//				if(requestuserEvent.getEventName()!=null && requestuserEvent.getEventName().length()>0) {
+//					searchuserEvent.setEventName(requestuserEvent.getEventName());
+//				}
+//				if(requestuserEvent.getLike()!=null && requestuserEvent.getLike().length()>0) {
+//					searchuserEvent.setLike(requestuserEvent.getLike());
+//				}
+//				if(requestuserEvent.getEventName()!=null && requestuserEvent.getEventName().length()>0) {
+//					searchuserEvent.setEventName(requestuserEvent.getEventName());
+//				}
 				if(requestuserEvent.getUserid()!=null) {
 					searchuserEvent.setUserid(requestuserEvent.getUserid());
 				}
@@ -229,94 +229,95 @@ public class UserEventController {
 	}
 	@POST
 	@Path("/userlikestatus")
-	public Response verifyLikeStatus(String request) {
+	public Response verifyLikeStatus(String request) throws NamingException {
 		UserEvent requestUser = new Gson().fromJson(request, UserEvent.class);
-		try {
 			EntityManager eManager = ResourceBase.INSTANCE.getEntityManager();
 	 		if(requestUser.getUserid()!=null)
 			{
 		    eManager.getTransaction().begin();
-		    String sql = "select * from USEREVENTDETAILS where USER_ID = :ulid and EVENT_ID = :eid";
-			Query query = eManager.createNativeQuery(sql, UserEvent.class);
-			query.setParameter("ulid", requestUser.getUserid());
-			query.setParameter("eid", requestUser.getEventId());
-			UserEvent evndet = (UserEvent) query.setMaxResults(1).getSingleResult();
-			if(evndet!=null) {
-				if(requestUser.getUserid()!=null && requestUser.getEventId()!=null) {
-					evndet.setLikeStatus("1");		
-				} 
-				else { evndet.setLikeStatus("0");}
-				eManager.persist(evndet);
+		   // String sql = "insert into USEREVENTDETAILS values(?,?,?)";
+			//Query query = eManager.createNativeQuery(sql, UserEvent.class);
+			//query.setParameter("ulid", requestUser.getUserid());
+			//query.setParameter("eid", requestUser.getEventId());
+			//UserEvent evndet = (UserEvent) query.setMaxResults(1);
+//			if(evndet!=null) {
+//				if(requestUser.getUserid()!=null && requestUser.getEventId()!=null) {
+//					evndet.setLikeStatus("1");		
+//				} 
+//				else { evndet.setLikeStatus("0");}
+				eManager.persist(requestUser);
 				eManager.getTransaction().commit();
 				return Response.status(Status.OK.getStatusCode())
-						.entity(new BasicResponseObject(Status.OK.getStatusCode(), evndet).toString())
+						.entity(new BasicResponseObject(Status.OK.getStatusCode(), requestUser).toString())
 						.header("Content-Type", "application/json").build();	
 			}else {
 				return Response.status(Status.NOT_FOUND.getStatusCode())
 						.entity(new BasicResponseObject(Status.NOT_FOUND.getStatusCode(), "event ids Not Found").toString())
 						.header("Content-Type", "application/json").build();				
 			}
+	}
 			
 			
-			}else {
-				return Response.status(Status.OK.getStatusCode())
-						.entity(new BasicResponseObject(Status.OK.getStatusCode(), "user Not Generated").toString())
-						.header("Content-Type", "application/json").build();
-			}
-		} catch (NamingException ex) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
-					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
-					.header("Content-Type", "application/json").build();
-		} catch (PersistenceException ex) {
-			ex.printStackTrace();
-			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
-					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
-					.header("Content-Type", "application/json").build();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
-					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
-					.header("Content-Type", "application/json").build();
-		}
-	}
-	@POST
-	@Path("/findusereventbyname")
-	public Response findUserEventByName(String request) {
-		UserEvent eventUse = new Gson().fromJson(request, UserEvent.class);
-		try {
-			EntityManager eManager = ResourceBase.INSTANCE.getEntityManager();
-			//String sql = "select * from USEREVENTDETAILS where EVENT_NAME = :unid";
-			//Query query = eManager.createNativeQuery(sql, UserEvent.class);
-			//query.setParameter("unid", eventUse.getEventName());
-			//List<UserEvent> slu = query.getResultList();
-			CriteriaBuilder criteriaBuilder = eManager.getCriteriaBuilder();
-			CriteriaQuery<UserEvent> criteriaQuery = criteriaBuilder.createQuery(UserEvent.class);
-			Root<UserEvent> achieveRoot = criteriaQuery.from(UserEvent.class);
-			List<Predicate> conditions = new ArrayList<Predicate>();
-			conditions.add(criteriaBuilder.equal(achieveRoot.get("eventName"),   eventUse.getEventName()));
-			criteriaQuery.where(conditions.toArray(new Predicate[] {}));
-			List<UserEvent> slu= eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
-					.getResultList();
-			ResponseSingleUserEventList usereventList = new ResponseSingleUserEventList();
-			usereventList.setSingleuserEventDatas(slu);
-			return Response.status(Status.OK.getStatusCode())
-				.entity(new BasicResponseObject(Status.OK.getStatusCode(), usereventList).toString())
-					.header("Content-Type", "application/json").build();
-		} catch (NamingException ex) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
-					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
-					.header("Content-Type", "application/json").build();	} 
-		catch (PersistenceException ex) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
-					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
-					.header("Content-Type", "application/json").build();
-	} catch (Exception ex) {
-		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
-				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
-				.header("Content-Type", "application/json").build();
-	}
+			
+		//else {
+//				return Response.status(Status.OK.getStatusCode())
+//						.entity(new BasicResponseObject(Status.OK.getStatusCode(), "user Not Generated").toString())
+//						.header("Content-Type", "application/json").build();
+//			}
+//		} catch (NamingException ex) {
+//			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+//					.header("Content-Type", "application/json").build();
+//		} catch (PersistenceException ex) {
+//			ex.printStackTrace();
+//			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+//					.header("Content-Type", "application/json").build();
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+//					.header("Content-Type", "application/json").build();
+//		}
 	
-	}
+//	@POST
+//	@Path("/findusereventbyname")
+//	public Response findUserEventByName(String request) {
+//		UserEvent eventUse = new Gson().fromJson(request, UserEvent.class);
+//		try {
+//			EntityManager eManager = ResourceBase.INSTANCE.getEntityManager();
+//			//String sql = "select * from USEREVENTDETAILS where EVENT_NAME = :unid";
+//			//Query query = eManager.createNativeQuery(sql, UserEvent.class);
+//			//query.setParameter("unid", eventUse.getEventName());
+//			//List<UserEvent> slu = query.getResultList();
+//			CriteriaBuilder criteriaBuilder = eManager.getCriteriaBuilder();
+//			CriteriaQuery<UserEvent> criteriaQuery = criteriaBuilder.createQuery(UserEvent.class);
+//			Root<UserEvent> achieveRoot = criteriaQuery.from(UserEvent.class);
+//			List<Predicate> conditions = new ArrayList<Predicate>();
+//			conditions.add(criteriaBuilder.equal(achieveRoot.get("eventName"),   eventUse.getEventName()));
+//			criteriaQuery.where(conditions.toArray(new Predicate[] {}));
+//			List<UserEvent> slu= eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
+//					.getResultList();
+//			ResponseSingleUserEventList usereventList = new ResponseSingleUserEventList();
+//			usereventList.setSingleuserEventDatas(slu);
+//			return Response.status(Status.OK.getStatusCode())
+//				.entity(new BasicResponseObject(Status.OK.getStatusCode(), usereventList).toString())
+//					.header("Content-Type", "application/json").build();
+//		} catch (NamingException ex) {
+//			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+//					.header("Content-Type", "application/json").build();	} 
+//		catch (PersistenceException ex) {
+//			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+//					.header("Content-Type", "application/json").build();
+//	} catch (Exception ex) {
+//		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+//				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+//				.header("Content-Type", "application/json").build();
+//	}
+//	
+//	}
 	@POST
 	@Path("/finduserdetaileventsbyeventid")
 	public Response findUserEventByEventId(String request) {
