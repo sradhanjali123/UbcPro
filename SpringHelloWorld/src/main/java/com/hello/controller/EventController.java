@@ -1,5 +1,6 @@
 package com.hello.controller;
 import io.sentry.*;
+
 import java.util.ArrayList;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response.Status;
 import com.google.gson.Gson;
 import com.ubc.pojo.BasicResponseObject;
 import com.ubc.pojo.Event;
+import com.ubc.pojo.UserEvent;
 
 @Path("/events")
 public class EventController {
@@ -345,19 +347,23 @@ public class EventController {
 			Event eventUse = new Gson().fromJson(request, Event.class);
 			try {
 				EntityManager eManager = ResourceBase.INSTANCE.getEntityManager();
-				//String sql = "select EVENT_ID from USEREVENTDETAILS where EVENT_ID = :edid";
-				//Query query = eManager.createNativeQuery(sql);
-				//query.setParameter("edid", eventUse.getEventId());
-				CriteriaBuilder criteriaBuilder = eManager.getCriteriaBuilder();
-				CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
-				Root<Event> achieveRoot = criteriaQuery.from(Event.class);
-				List<Predicate> conditions = new ArrayList<Predicate>();
-				conditions.add(criteriaBuilder.equal(achieveRoot.get("eventId"), eventUse.getEventId()));
-				criteriaQuery.where(conditions.toArray(new Predicate[] {}));
-				Long slu  = (long) eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
-						.getResultList().size();
-				//Long slu = (long) query.getResultList().size();
+				eManager.getTransaction().begin();
+				Event searchEvent = eManager.find(Event.class, eventUse.getEventId());
+				String sql = "select EVENT_ID from USEREVENTDETAILS where EVENT_ID = :edid";
+				Query query = eManager.createNativeQuery(sql);
+				query.setParameter("edid", eventUse.getEventId());
+				//CriteriaBuilder criteriaBuilder = eManager.getCriteriaBuilder();
+				//CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
+				//Root<Event> achieveRoot = criteriaQuery.from(Event.class);
+				//List<Predicate> conditions = new ArrayList<Predicate>();
+				//conditions.add(criteriaBuilder.equal(achieveRoot.get("eventId"), eventUse.getEventId()));
+				//criteriaQuery.where(conditions.toArray(new Predicate[] {}));
+				//Long slu  = (long) eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1).getResultList().size();
+				Long slu = (long) query.getResultList().size();
 				eventUse.setLikeCount(slu);
+				searchEvent.setLikeCount(slu);
+				eManager.persist(searchEvent);
+				eManager.getTransaction().commit();
 				return Response.status(Status.OK.getStatusCode())
 					.entity(new BasicResponseObject(Status.OK.getStatusCode(), eventUse).toString())
 						.header("Content-Type", "application/json").build();
