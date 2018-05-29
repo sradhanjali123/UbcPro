@@ -16,7 +16,10 @@ C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\ubc\pojo\BasicRespo
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseAchievementList.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseMenuList.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseUserEventList.java
+C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseBlogList.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseGalleryList.java
+C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\CommentController.java
+C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseCommentList.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\UserEventController.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\BannerController.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\ubc\pojo\Event.java
@@ -25,9 +28,12 @@ C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\Re
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseEventDateList.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\ubc\pojo\Achievement.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseSingleUserEventList.java
+C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\BlogController.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\MetaDataController.java
+C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\ubc\pojo\Blog.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\ResponseEventList.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\ubc\pojo\Gallery.java
+C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\ubc\pojo\Comment.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\ubc\pojo\UsersQuery.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\ubc\pojo\UserEvent.java
 C:\Users\pc\git\UbcSpring\SpringHelloWorld\src\main\java\com\hello\controller\CourseController.java

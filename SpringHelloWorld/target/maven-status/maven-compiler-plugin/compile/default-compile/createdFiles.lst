@@ -1,10 +1,13 @@
 com\hello\controller\ResponseMetaDataList.class
+com\hello\controller\ResponseBlogList.class
 com\hello\controller\UserEventController.class
 com\hello\controller\HelloController.class
 com\hello\controller\CourseController.class
 com\ubc\pojo\MetaDataa.class
 com\hello\controller\ResponseMenuList.class
 com\ubc\pojo\Gallery.class
+com\ubc\pojo\Comment.class
+com\hello\controller\ResponseCommentList.class
 com\hello\controller\ClickOtpController.class
 com\hello\controller\ResponseEventList.class
 com\hello\controller\ResourceBase.class
@@ -22,6 +25,7 @@ com\hello\controller\AchievementController.class
 com\hello\controller\ResponseUserEventList.class
 com\ubc\pojo\Course.class
 com\ubc\pojo\ClickOtp.class
+com\hello\controller\BlogController.class
 com\hello\controller\GalleryController.class
 com\hello\controller\ResponseGalleryList.class
 com\hello\controller\MenuController.class
@@ -32,7 +36,9 @@ com\ubc\pojo\SocialLoginUsers.class
 com\hello\controller\ResponseCourseList.class
 com\hello\controller\ResponseUsersList.class
 com\hello\controller\EventController.class
+com\ubc\pojo\Blog.class
 com\hello\controller\ResponseUsersQueryList.class
 com\ubc\pojo\Achievement.class
 com\ubc\pojo\Menu.class
+com\hello\controller\CommentController.class
 com\hello\controller\ResponseAchievementList.class
