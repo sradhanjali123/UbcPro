@@ -18,13 +18,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.ubc.pojo.BasicResponseObject;
 import com.ubc.pojo.UsersQuery;
 
 @Path("/userqueries")
 public class UserQueryController {
-
+	public static Logger logger = LogManager.getLogger(UserQueryController.class);
 	@POST
 	@Path("/createupdateuserquery")
 	public Response createupdateUser(String request) {
@@ -49,10 +52,12 @@ public class UserQueryController {
 					searchUser.setMessage(requestUser.getMessage());
 				}
 				eManager.getTransaction().commit();
+				logger.info("User query updated");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), searchUser).toString())
 						.header("Content-Type", "application/json").build();	
 			}else {
+				logger.error("Response sending Failed");
 				return Response.status(Status.NOT_FOUND.getStatusCode())
 						.entity(new BasicResponseObject(Status.NOT_FOUND.getStatusCode(), "User Query Not Found").toString())
 						.header("Content-Type", "application/json").build();				
@@ -63,19 +68,23 @@ public class UserQueryController {
 				eManager.getTransaction().begin();
 				eManager.persist(requestUser);
 				eManager.getTransaction().commit();
+				logger.info("User query created");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), requestUser).toString())
 						.header("Content-Type", "application/json").build();
 			}
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -98,18 +107,22 @@ public class UserQueryController {
 		    List<UsersQuery> slu = eManager.createQuery(query).getResultList();		
 			ResponseUsersQueryList userList = new ResponseUsersQueryList();
 			userList.setUserssquery(slu);
+			logger.info("User query details");
 			return Response.status(Status.OK.getStatusCode())
 					.entity(new BasicResponseObject(Status.OK.getStatusCode(), userList).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -128,18 +141,22 @@ public class UserQueryController {
 		  UsersQuery searchUser = eManager.find(UsersQuery.class, requestUser.getQueryid());
 		    eManager.remove(searchUser);
 			eManager.getTransaction().commit();
+			logger.info("User query deleted");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), null).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
@@ -164,18 +181,22 @@ public class UserQueryController {
 			criteriaQuery.where(conditions.toArray(new Predicate[] {}));
 			UsersQuery usedet = eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
 					.getSingleResult();
+			logger.info("User query found");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), usedet).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
@@ -202,18 +223,22 @@ public class UserQueryController {
 					.getResultList();
 			ResponseUsersQueryList userList = new ResponseUsersQueryList();
 			userList.setUserssquery(slu);
+			logger.info("User query found");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), userList).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();

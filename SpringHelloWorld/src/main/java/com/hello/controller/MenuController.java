@@ -14,12 +14,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.ubc.pojo.BasicResponseObject;
 import com.ubc.pojo.Menu;
 import io.sentry.*;
 @Path("/menu")
 public class MenuController {
+	public static Logger logger = LogManager.getLogger(MenuController.class);
 	@POST
 	@Path("/createupdatemenu")
 	public Response createupdateMenu(String request) {
@@ -38,12 +43,13 @@ public class MenuController {
 					searchMenu.setMenuOrder(requestMenu.getMenuOrder());
 				}
 				
-				
+				logger.info("menu updated");
 				eManager.getTransaction().commit();
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), searchMenu).toString())
 						.header("Content-Type", "application/json").build();	
 			}else {
+				logger.error("Response sending Failed");
 				return Response.status(Status.NOT_FOUND.getStatusCode())
 						.entity(new BasicResponseObject(Status.NOT_FOUND.getStatusCode(), "Banner Not Found").toString())
 						.header("Content-Type", "application/json").build();				
@@ -54,19 +60,23 @@ public class MenuController {
 				eManager.getTransaction().begin();
 				eManager.persist(requestMenu);
 				eManager.getTransaction().commit();
+				logger.info("menu created");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), requestMenu).toString())
 						.header("Content-Type", "application/json").build();
 			}
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -89,18 +99,22 @@ public class MenuController {
 		    List<Menu> slu = eManager.createQuery(query).getResultList();	
 			ResponseMenuList menuList = new ResponseMenuList();
 			menuList.setMenuData(slu);
+			logger.info("menu details");
 			return Response.status(Status.OK.getStatusCode())
 					.entity(new BasicResponseObject(Status.OK.getStatusCode(), menuList).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -119,18 +133,22 @@ public class MenuController {
 		  Menu searchMenu = eManager.find(Menu.class, menuUse.getMenuId());
 		    eManager.remove(searchMenu);
 			eManager.getTransaction().commit();
+			logger.info("menu deleted");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), null).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
@@ -155,18 +173,22 @@ public class MenuController {
 			criteriaQuery.where(conditions.toArray(new Predicate[] {}));
 			Menu bandet = eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
 					.getSingleResult();
+			logger.info("menu found");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), bandet).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();

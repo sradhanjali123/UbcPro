@@ -17,6 +17,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.ubc.pojo.BasicResponseObject;
 import com.ubc.pojo.Course;
@@ -24,6 +28,7 @@ import com.ubc.pojo.Course;
 
 @Path("/course")
 public class CourseController {
+	public static Logger logger = LogManager.getLogger(CourseController.class);
 	@POST
 	@Path("/createupdatecourse")
 	public Response createupdateCourse(String request) {
@@ -51,10 +56,12 @@ public class CourseController {
 					requestCourse.setCoursePrice(searchCourse.getCoursePrice());
 				}	
 				eManager.getTransaction().commit();
+				logger.info("course updated");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), searchCourse).toString())
 						.header("Content-Type", "application/json").build();	
 			}else {
+				logger.info("Response failed");
 				return Response.status(Status.NOT_FOUND.getStatusCode())
 						.entity(new BasicResponseObject(Status.NOT_FOUND.getStatusCode(), "Banner Not Found").toString())
 						.header("Content-Type", "application/json").build();				
@@ -65,19 +72,23 @@ public class CourseController {
 				eManager.getTransaction().begin();
 				eManager.persist(requestCourse);
 				eManager.getTransaction().commit();
+				logger.info("course created");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), requestCourse).toString())
 						.header("Content-Type", "application/json").build();
 			}
 		} catch (NamingException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -100,18 +111,22 @@ public class CourseController {
 		    List<Course> slu = eManager.createQuery(query).getResultList();	
 			ResponseCourseList courseList = new ResponseCourseList();
 			courseList.setCourseData(slu);
+			logger.info(" course details");
 			return Response.status(Status.OK.getStatusCode())
 					.entity(new BasicResponseObject(Status.OK.getStatusCode(), courseList).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -130,18 +145,22 @@ public class CourseController {
 		  Course searchCourse = eManager.find(Course.class, courseUse.getCourseId());
 		    eManager.remove(searchCourse);
 			eManager.getTransaction().commit();
+			logger.info("course deleted");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), null).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
@@ -166,18 +185,22 @@ public class CourseController {
 			criteriaQuery.where(conditions.toArray(new Predicate[] {}));
 			Course bandet = eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
 					.getSingleResult();
+			logger.info(" course found ");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), bandet).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
@@ -204,19 +227,23 @@ public class CourseController {
 					.getResultList();
 			ResponseCourseList courseList = new ResponseCourseList();
 			courseList.setCourseData(slu);
+			logger.info(" course found ");
 			//Course bandet = (Course) query.setMaxResults(1).getSingleResult();
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), courseList).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();

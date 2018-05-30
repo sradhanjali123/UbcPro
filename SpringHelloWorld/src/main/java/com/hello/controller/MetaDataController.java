@@ -17,12 +17,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.ubc.pojo.BasicResponseObject;
 import com.ubc.pojo.MetaDataa;
 
 @Path("/metadatas")
 public class MetaDataController {
+	public static Logger logger = LogManager.getLogger(MetaDataController.class);
 	@POST
 	@Path("/createupdatemetadata")
 	public Response createupdateMetadata(String request) {
@@ -44,10 +49,12 @@ public class MetaDataController {
 					searchMetadata.setMenuId(requestMetadata.getMenuId());
 				}
 				eManager.getTransaction().commit();
+				logger.info("meta data updated");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), searchMetadata).toString())
 						.header("Content-Type", "application/json").build();	
 			}else {
+				logger.error("Response sending Failed");
 				return Response.status(Status.NOT_FOUND.getStatusCode())
 						.entity(new BasicResponseObject(Status.NOT_FOUND.getStatusCode(), "Metadata Not Found").toString())
 						.header("Content-Type", "application/json").build();				
@@ -58,19 +65,23 @@ public class MetaDataController {
 				eManager.getTransaction().begin();
 				eManager.persist(requestMetadata);
 				eManager.getTransaction().commit();
+				logger.info("meta data created");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), requestMetadata).toString())
 						.header("Content-Type", "application/json").build();
 			}
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -93,18 +104,22 @@ public class MetaDataController {
 		    List<MetaDataa> slu = eManager.createQuery(query).getResultList();	
 			ResponseMetaDataList metadataList = new ResponseMetaDataList();
 			metadataList.setMetadatas(slu);
+			logger.info("meta data details");
 			return Response.status(Status.OK.getStatusCode())
 					.entity(new BasicResponseObject(Status.OK.getStatusCode(), metadataList).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -123,18 +138,22 @@ public class MetaDataController {
 		  MetaDataa searchMetadata = eManager.find(MetaDataa.class, metadataUse.getContentid());
 		    eManager.remove(searchMetadata);
 			eManager.getTransaction().commit();
+			logger.info("meta data deleted");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), null).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
@@ -160,18 +179,22 @@ public class MetaDataController {
 			criteriaQuery.where(conditions.toArray(new Predicate[] {}));
 			MetaDataa metdet = eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
 					.getSingleResult();
+			logger.info("meta data found");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), metdet).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
@@ -196,18 +219,22 @@ public class MetaDataController {
 			criteriaQuery.where(conditions.toArray(new Predicate[] {}));
 			MetaDataa metdet = eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
 					.getSingleResult();
+			logger.info("meta data found");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), metdet).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();

@@ -54,8 +54,18 @@ public class Event {
 	  @Expose
 	  @SerializedName("event_date")
 	private String eventDate;
+	 @Column(name="EVENT_CATEGORYID")
+	  @Expose
+	  @SerializedName("event_cateid")
+	private Long eventCategoryId;
 	 
-	 public String getEventDate() {
+	 public Long getEventCategoryId() {
+		return eventCategoryId;
+	}
+	public void setEventCategoryId(Long eventCategoryId) {
+		this.eventCategoryId = eventCategoryId;
+	}
+	public String getEventDate() {
 		return eventDate;
 	}
 	public void setEventDate(String eventDate) {

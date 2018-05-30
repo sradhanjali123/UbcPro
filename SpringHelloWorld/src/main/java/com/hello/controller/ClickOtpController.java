@@ -13,6 +13,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.ubc.pojo.BasicResponseObject;
 import com.ubc.pojo.ClickOtp;
@@ -21,6 +25,7 @@ import com.ubc.pojo.SocialLoginUsers;
 
 @Path("/clickotp")
 public class ClickOtpController {
+	public static Logger logger = LogManager.getLogger(ClickOtpController.class);
 	public  static  char[] OTP()
     {
         System.out.println("Generating OTP using random() : ");
@@ -67,10 +72,12 @@ public Response verifyOtp(String request) {
 			}	
 			eManager.persist(seeuser);
 			eManager.getTransaction().commit();
+			logger.info("otp generated and verified");
 			return Response.status(Status.OK.getStatusCode())
 					.entity(new BasicResponseObject(Status.OK.getStatusCode(), seeuser).toString())
 					.header("Content-Type", "application/json").build();	
 		}else {
+			logger.error("Response sending Failed");
 			return Response.status(Status.NOT_FOUND.getStatusCode())
 					.entity(new BasicResponseObject(Status.NOT_FOUND.getStatusCode(), "User phone no Not Found").toString())
 					.header("Content-Type", "application/json").build();				
@@ -78,19 +85,23 @@ public Response verifyOtp(String request) {
 		
 		
 		}else {
+			logger.error("Response sending Failed");
 			return Response.status(Status.OK.getStatusCode())
 					.entity(new BasicResponseObject(Status.OK.getStatusCode(), "Otp Not Generated").toString())
 					.header("Content-Type", "application/json").build();
 		}
 	} catch (NamingException ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
 	} catch (PersistenceException ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();

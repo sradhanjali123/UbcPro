@@ -17,12 +17,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.ubc.pojo.BasicResponseObject;
 import com.ubc.pojo.Blog;
+import com.ubc.pojo.Event;
 
 @Path("/blogs")
 public class BlogController {
+	public static Logger logger = LogManager.getLogger(BlogController.class);
 	@POST
 	@Path("/createupdateblog")
 	public Response createupdateBlog(String request) {
@@ -53,6 +58,7 @@ public class BlogController {
 					searchBlog.setBlogDate(new Date());
 				}
 					eManager.getTransaction().commit();
+					logger.info("Blog updated");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), searchBlog).toString())
 						.header("Content-Type", "application/json").build();	
@@ -68,19 +74,23 @@ public class BlogController {
 				requestBlog.setBlogDate(new Date());
 				eManager.persist(requestBlog);
 				eManager.getTransaction().commit();
+				logger.info("Blog created");
 				return Response.status(Status.OK.getStatusCode())
 						.entity(new BasicResponseObject(Status.OK.getStatusCode(), requestBlog).toString())
 						.header("Content-Type", "application/json").build();
 			}
 		} catch (NamingException ex) {
+			logger.error("Response sending failed!");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response sending failed!");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response sending failed!");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -99,18 +109,22 @@ public class BlogController {
 		    List<Blog> slu = eManager.createQuery(query).getResultList();		
 			ResponseBlogList blogList = new ResponseBlogList();
 			blogList.setBlogResult(slu);
+			logger.info("Blog details");
 			return Response.status(Status.OK.getStatusCode())
 					.entity(new BasicResponseObject(Status.OK.getStatusCode(), blogList).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending failed!");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (PersistenceException ex) {
+			logger.error("Response sending failed!");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (Exception ex) {
+			logger.error("Response sending failed!");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
@@ -129,18 +143,22 @@ public class BlogController {
 		  Blog searchBlog = eManager.find(Blog.class, blogUse.getBlogId());
 		    eManager.remove(searchBlog);
 			eManager.getTransaction().commit();
+			logger.info("Delete blog");
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), null).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending failed!");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending failed!");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending failed!");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
@@ -165,25 +183,66 @@ public class BlogController {
 			criteriaQuery.where(conditions.toArray(new Predicate[] {}));
 			Blog achdet = eManager.createQuery(criteriaQuery.select(achieveRoot)).setMaxResults(1)
 					.getSingleResult();
+			logger.info("Blog Found");
 			//Achievement achdet = (Achievement) query.setMaxResults(1).getSingleResult();
 			return Response.status(Status.OK.getStatusCode())
 				.entity(new BasicResponseObject(Status.OK.getStatusCode(), achdet).toString())
 					.header("Content-Type", "application/json").build();
 		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();	} 
 		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
 			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 					.header("Content-Type", "application/json").build();
 	} catch (Exception ex) {
+		logger.error("Response sending Failed");
 		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
 				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
 				.header("Content-Type", "application/json").build();
 	}
 	
 	}
-
+	@GET
+	@Path("/findlatestblogs")
+	public Response findLatestBlogByDate(String request) {
+		//Event eventUse = new Gson().fromJson(request, Event.class);
+		try {
+			EntityManager eManager = ResourceBase.INSTANCE.getEntityManager();
+			//String sql = "select * from EVENTDETAILS ORDER BY EVENT_DATE DESC";
+			//Query query = eManager.createNativeQuery(sql, Event.class);
+			//query.setParameter("edid", eventUse.getEventDate());
+			CriteriaBuilder cb = eManager.getCriteriaBuilder();
+			CriteriaQuery<Blog> q = cb.createQuery(Blog.class);
+			Root<Blog> b = q.from(Blog.class);
+			q.select(b).orderBy(cb.desc(b.get("blogDate")));
+			List<Blog> slu = eManager.createQuery(q).getResultList();
+			ResponseBlogList eventList = new ResponseBlogList();
+			eventList.setBlogResult(slu);
+			logger.info("Latest blogs");
+			return Response.status(Status.OK.getStatusCode())
+				.entity(new BasicResponseObject(Status.OK.getStatusCode(), eventList).toString())
+					.header("Content-Type", "application/json").build();
+		} catch (NamingException ex) {
+			logger.error("Response sending Failed");
+			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+					.header("Content-Type", "application/json").build();	} 
+		catch (PersistenceException ex) {
+			logger.error("Response sending Failed");
+			return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+					.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+					.header("Content-Type", "application/json").build();
+	} catch (Exception ex) {
+		logger.error("Response sending Failed");
+		return Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode())
+				.entity(new BasicResponseObject(Status.INTERNAL_SERVER_ERROR.getStatusCode(), ex.getMessage()).toString())
+				.header("Content-Type", "application/json").build();
+	}
+	
+	}
 
 }
