@@ -7,12 +7,15 @@ com\ubc\pojo\MetaDataa.class
 com\hello\controller\ResponseMenuList.class
 com\ubc\pojo\Gallery.class
 com\ubc\pojo\Comment.class
+com\hello\controller\EventCategoryController.class
 com\hello\controller\ResponseCommentList.class
 com\hello\controller\ClickOtpController.class
 com\hello\controller\ResponseEventList.class
+com\ubc\pojo\EventCategory.class
 com\hello\controller\ResourceBase.class
 com\hello\controller\ResponseSingleUserEventList.class
 com\hello\controller\UserController.class
+com\hello\controller\ResponseEventCategoryList.class
 com\hello\controller\ResponseEventDateList.class
 com\ubc\pojo\Event.class
 com\hello\controller\MetaDataController.class
@@ -21,6 +24,7 @@ com\ubc\pojo\UserEvent.class
 com\hello\controller\BannerController.class
 com\hello\controller\ResponseBannerList.class
 com\ubc\pojo\UsersQuery.class
+com\ubc\pojo\Util.class
 com\hello\controller\AchievementController.class
 com\hello\controller\ResponseUserEventList.class
 com\ubc\pojo\Course.class

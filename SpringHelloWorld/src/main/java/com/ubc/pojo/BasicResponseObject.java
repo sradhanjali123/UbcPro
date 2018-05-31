@@ -2,10 +2,13 @@ package com.ubc.pojo;
 
 import com.google.gson.Gson;
 
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+
 public class BasicResponseObject {
+	private Gson gson;
 	@Expose
 	@SerializedName("status_code")
 	int statusCode;
@@ -40,4 +43,15 @@ public class BasicResponseObject {
 		return "";
 	}
 	
+	public String toJson() {
+		try {
+			return gson.toJson(this);
+		}catch (Exception e) {
+			return null;
+		}		
+	}
+	public String encJson() {
+		String json = Util.encrypt(toJson());
+		return json;
+	}
 }
